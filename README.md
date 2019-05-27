@@ -2,7 +2,7 @@
 
 
 ## 使用composer安装
-` composer require fly/alimns-helper-php `
+` composer require zdz/alimns-helper-php `
 
 ## 用法
 
