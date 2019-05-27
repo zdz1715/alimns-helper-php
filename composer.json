@@ -1,0 +1,19 @@
+{
+    "name": "zdz/alimns-helper-php",
+    "description": "aliyun,mns,mq",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "zdz",
+            "email": "zdzserver@163.com"
+        }
+    ],
+    "require": {
+        "aliyun/aliyun-mns-php-sdk": ">=1.0.0"
+    },
+    "autoload":{
+        "psr-4": {
+            "AliMNS\\": "src/"
+        }
+    }
+}
