@@ -54,54 +54,63 @@ class MnsHandle
     }
 
 
+
+
     /**
-     * 创建队列
      * @param $queueName
      * @param QueueAttributes|null $attributes
+     * @return mixed
      */
     public function createQueue($queueName, QueueAttributes $attributes = null) {
         $request = new CreateQueueRequest($queueName, $attributes);
         try {
-            self::$client->createQueue($request);
+            $result = self::$client->createQueue($request);
         }
         catch (MnsException $e)
         {
             throw new \LogicException($e, $e->getCode());
         }
+        return $result;
     }
+
 
     /**
      * 删除队列
      * @param $queueName
+     * @return mixed
      */
     public function deleteQueue($queueName) {
         try {
-            self::$client->deleteQueue($queueName);
+            $result = self::$client->deleteQueue($queueName);
         }
         catch (MnsException $e)
         {
             throw new \LogicException($e, $e->getCode());
         }
+        return $result;
     }
 
+
     /**
-     * 发送消息
+     *  发送消息
      * @param $queueName
      * @param $messageBody
      * @param null $delaySeconds
      * @param null $priority
      * @param bool $base64
+     * @return \AliyunMNS\Responses\SendMessageResponse
      */
     public function sendMessage($queueName, $messageBody, $delaySeconds = NULL, $priority = NULL, $base64 = TRUE) {
         $queue = self::$client->getQueueRef($queueName, $base64);
         $request = new SendMessageRequest($messageBody, $delaySeconds, $priority, $base64);
         try {
-            $queue->sendMessage($request);
+            $result = $queue->sendMessage($request);
         }
         catch (MnsException $e)
         {
             throw new \LogicException($e, $e->getCode());
         }
+        return $result;
     }
 
 
@@ -112,7 +121,7 @@ class MnsHandle
      * @param $queueName
      * @param bool $autoDelete
      * @param int $waitSeconds
-     * @return |null
+     * @return \AliyunMNS\Responses\ReceiveMessageResponse
      */
     public function receiveMessage($queueName, $autoDelete = false, $waitSeconds = 30) {
         $receiptHandle = NULL;
@@ -124,27 +133,31 @@ class MnsHandle
         {
             throw new \LogicException($e, $e->getCode());
         }
-        $receiptHandle = $messageResult->getReceiptHandle();
+        // 自动删除
         if ($autoDelete) {
+            $receiptHandle = $messageResult->getReceiptHandle();
             $queue->deleteMessage($receiptHandle);
         }
         return $messageResult;
     }
 
+
     /**
      * 删除消息
      * @param $queueName
      * @param $receiptHandle
+     * @return \AliyunMNS\Responses\ReceiveMessageResponse
      */
     public function deleteMessage($queueName, $receiptHandle) {
         $queue = self::$client->getQueueRef($queueName);
         try {
-            $res = $queue->deleteMessage($receiptHandle);
+            $result = $queue->deleteMessage($receiptHandle);
         }
         catch (MnsException $e)
         {
             throw new \LogicException($e, $e->getCode());
         }
+        return $result;
     }
 }
 
